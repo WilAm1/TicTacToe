@@ -1,0 +1,20 @@
+.body {
+    margin: 0;
+    text-align: center;
+}
+
+.game-board {
+    margin: 0 auto;
+    width: 600px;
+    height: 600px;
+    background-color: darkcyan;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 10px;
+    gap: 10px;
+}
+
+.tile {
+    background-color: tomato;
+}
