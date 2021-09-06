@@ -20,5 +20,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: tomato;
+    background-color: lightblue;
+}
+
+.tile:hover {
+    opacity: .8;
 }
