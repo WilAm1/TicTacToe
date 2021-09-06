@@ -6,12 +6,12 @@ const GameBoard = (function() {
         // console.log(_gameTiles);
     };
     const _winningCombinations = [
-        [4, 5, 6],
         [1, 5, 9],
-        [1, 2, 3],
         [1, 4, 7],
         [2, 5, 8],
         [3, 6, 9],
+        [1, 2, 3],
+        [4, 5, 6],
         [7, 8, 9]
     ];
     const _checkCombination = (combi, pArr) => {
@@ -20,6 +20,7 @@ const GameBoard = (function() {
     const checkGameOver = (arr) => {
         const sortedArr = arr.sort();
         console.log(sortedArr);
+        // Loops to all possible winning combination
         for (let i = 0; i < _winningCombinations.length; i++) {
             if (_checkCombination(_winningCombinations[i], sortedArr)) return true
         }
@@ -34,6 +35,7 @@ const gameControl = (function() {
         const div = document.createElement('div');
         div.classList.add('tile');
         div.setAttribute('data-array-number', arrNum);
+        div.setAttribute('data-board-number', arrNum + 1);
         div.textContent = tile;
         return div
     }
@@ -91,13 +93,14 @@ gameBoardTiles.forEach(tile => {
         const p1Turn = player1.getMyTurn(),
             p2Turn = player2.getMyTurn();
         let mark = '';
-        const tileNum = e.target.getAttribute('data-array-number');
+        const tileArrNum = e.target.getAttribute('data-array-number');
+        const tileBoardNum = e.target.getAttribute('data-board-number');
         if (whichPlayerTurn(p1Turn, p2Turn)) {
             mark = player1.marker;
-            player1.addMarkTile(Number(e.target.textContent));
+            player1.addMarkTile(Number(tileBoardNum));
         } else {
             mark = player2.marker;
-            player2.addMarkTile(Number(e.target.textContent));
+            player2.addMarkTile(Number(tileBoardNum));
             const result = GameBoard.checkGameOver(player2.getMarkedTiles());
             console.log(result);
         }
@@ -105,7 +108,7 @@ gameBoardTiles.forEach(tile => {
         // disables click event on the css
         e.target.classList.add('clicked');
         // console.log(e.target);
-        GameBoard.changeTile(tileNum, mark);
+        GameBoard.changeTile(tileArrNum, mark);
         changePlayerTurns();
 
     });
