@@ -1,5 +1,5 @@
 const GameBoard = (function() {
-    let _gameTiles = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    let _gameTiles = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     const getBoard = () => _gameTiles;
     const changeTile = (n, mark) => {
         _gameTiles.splice(n, 1, mark);
@@ -9,6 +9,7 @@ const GameBoard = (function() {
         [1, 5, 9],
         [1, 4, 7],
         [2, 5, 8],
+        [3, 5, 7],
         [3, 6, 9],
         [1, 2, 3],
         [4, 5, 6],
@@ -17,17 +18,17 @@ const GameBoard = (function() {
     const _checkCombination = (combi, pArr) => {
         return combi.every((value) => pArr.includes(value))
     };
-
-    const checkGameOver = (arr) => {
+    const checkIfDraw = () => !_gameTiles.includes(' ');
+    const checkWin = (arr) => {
         const sortedArr = arr.sort();
-        console.log(sortedArr);
+        // console.log(sortedArr);
         // Loops to all possible winning combination
         for (let i = 0; i < _winningCombinations.length; i++) {
             if (_checkCombination(_winningCombinations[i], sortedArr)) return true
         }
         return false
     };
-    return { getBoard, changeTile, checkGameOver }
+    return { getBoard, changeTile, checkWin, checkIfDraw }
 
 })();
 
@@ -52,7 +53,12 @@ const gameControl = (function() {
     const stopGame = (player) => {
         const winningDiv = document.createElement('div');
         const winningText = document.createElement('p');
-        winningText.textContent = `${player.getName()} wins!`;
+        if (!!player.getWin) {
+            winningText.textContent = 'It\'s A draw.'
+        } else {
+            winningText.textContent = `${player.getName()} wins!`;
+
+        }
         winningDiv.appendChild(winningText);
         const announcementDiv = document.querySelector('.announcement');
         announcementDiv.appendChild(winningDiv);
@@ -68,18 +74,33 @@ const Player = function(name, symbol, bool) {
     let _score = 0;
     let _isMyTurn = bool;
     let _markedTiles = [];
-    let _win = false;
+    let _wins = false;
     const marker = symbol;
+    // public methods
     const changeMyTurn = () => {
         _isMyTurn = (_isMyTurn) ? false : true;
     };
     const addMarkTile = (n) => _markedTiles.push(n);
+    const changeWin = () => {
+        _wins = true;
+    }
+    const getWin = () => _wins
     const getMarkedTiles = () => _markedTiles;
     const getMyTurn = () => _isMyTurn;
     const getScore = () => _score;
     const getName = () => name;
 
-    return { marker, getName, getScore, getMarkedTiles, addMarkTile, changeMyTurn, getMyTurn }
+    return {
+        marker,
+        getName,
+        getScore,
+        getMarkedTiles,
+        addMarkTile,
+        getWin,
+        changeWin,
+        changeMyTurn,
+        getMyTurn
+    }
 };
 
 const player1 = Player('wil', '❌', true);
@@ -103,43 +124,36 @@ const toggleBoardClick = () => {
         tile.classList.toggle('disabled');
     });
 };
+
+
 gameBoardTiles.forEach(tile => {
     tile.addEventListener('click', (e) => {
+        const tileArrNum = e.target.getAttribute('data-array-number');
+        const tileBoardNum = e.target.getAttribute('data-board-number');
         if (tile.classList.contains('disabled')) return
+            // disables click event on the css
+        e.target.classList.add('clicked');
         const p1Turn = player1.getMyTurn(),
             p2Turn = player2.getMyTurn();
         let mark = '';
-        const tileArrNum = e.target.getAttribute('data-array-number');
-        const tileBoardNum = e.target.getAttribute('data-board-number');
         const playerTurn = (whichPlayerTurn(p1Turn, p2Turn)) ? player1 : player2;
         mark = playerTurn.marker;
+        GameBoard.changeTile(tileArrNum, mark);
         playerTurn.addMarkTile(Number(tileBoardNum));
-        const playerTiles = playerTurn.getMarkedTiles();
-        const isPlayerWinning = GameBoard.checkGameOver(playerTiles);
+        changePlayerTurns();
 
-        if (isPlayerWinning) {
+        const playerTiles = playerTurn.getMarkedTiles();
+        const isPlayerWinning = GameBoard.checkWin(playerTiles);
+        playerTurn.changeWin(isPlayerWinning);
+
+        console.log(GameBoard.checkIfDraw());
+
+
+        if (isPlayerWinning || GameBoard.checkIfDraw()) {
             toggleBoardClick();
             gameControl.stopGame(playerTurn);
         }
-
-        // if (whichPlayerTurn(p1Turn, p2Turn)) {
-        //     mark = player1.marker;
-        //     player1.addMarkTile(Number(tileBoardNum));
-        //     const isPlayerWinning = GameBoard.checkGameOver(player1.getMarkedTiles());
-        //     console.log(isPlayerWinning);
-
-        // } else {
-        //     mark = player2.marker;
-        //     player2.addMarkTile(Number(tileBoardNum));
-        //     const isPlayerWinning = GameBoard.checkGameOver(player2.getMarkedTiles());
-        //     console.log(isPlayerWinning);
-        // }
         e.target.textContent = mark;
-        // disables click event on the css
-        e.target.classList.add('clicked');
-        // console.log(e.target);
-        GameBoard.changeTile(tileArrNum, mark);
-        changePlayerTurns();
 
     });
 });
