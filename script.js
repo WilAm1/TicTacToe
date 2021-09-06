@@ -5,6 +5,18 @@ const GameBoard = (function() {
         _gameTiles.splice(n, 1, mark);
         console.log(_gameTiles);
     };
+    const _winningCombinations = [
+        [1, 5, 9],
+        [1, 2, 3],
+        [1, 4, 7],
+        [2, 5, 8],
+        [3, 6, 9],
+        [4, 5, 6],
+        [7, 8, 9]
+    ];
+    const _checkGameOver = () => {
+
+    };
     return { getBoard, changeTile }
 
 })();
@@ -34,16 +46,19 @@ const gameControl = (function() {
 // Player Factory function
 const Player = function(name, symbol, bool) {
     let _score = 0;
-    const marker = symbol;
     let _isMyTurn = bool;
+    let _markedTiles = [];
+    const marker = symbol;
     const changeMyTurn = () => {
-        _isMyTurn = (_isMyTurn) ? false : true
+        _isMyTurn = (_isMyTurn) ? false : true;
     };
-    const getMyTurn = () => _isMyTurn
+    const addMarkTile = (n) => _markedTiles.push(n);
+    const getMarkedTiles = () => _markedTiles;
+    const getMyTurn = () => _isMyTurn;
     const getScore = () => _score;
     const getName = () => name;
 
-    return { marker, getName, getScore, changeMyTurn, getMyTurn }
+    return { marker, getName, getScore, getMarkedTiles, addMarkTile, changeMyTurn, getMyTurn }
 };
 
 const player1 = Player('wil', '❌', true);
@@ -52,7 +67,8 @@ const player2 = Player('Bot', '⭕', false);
 
 
 
-const whichPlayerTurn = (p1, p2) => (!!p1) ? 1 : 0;
+const whichPlayerTurn = (p1, p2) => (p1 && !(p2)) ? 1 : 0;
+
 const changePlayerTurns = () => {
     player1.changeMyTurn();
     player2.changeMyTurn();
