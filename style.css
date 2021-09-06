@@ -28,6 +28,15 @@
 
 .tile.clicked {
     pointer-events: none;
+    user-select: none;
+}
+
+.tile.clicked::selection {
+    background: none;
+}
+
+.tile.clicked::-moz-selection {
+    background: none;
 }
 
 .tile:hover {
