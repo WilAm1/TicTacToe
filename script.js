@@ -53,7 +53,8 @@ const gameControl = (function() {
     const stopGame = (player) => {
         const winningDiv = document.createElement('div');
         const winningText = document.createElement('p');
-        if (!!player.getWin) {
+        console.log(player.getWin());
+        if (!player.getWin()) {
             winningText.textContent = 'It\'s A draw.'
         } else {
             winningText.textContent = `${player.getName()} wins!`;
@@ -132,7 +133,6 @@ gameBoardTiles.forEach(tile => {
         const tileBoardNum = e.target.getAttribute('data-board-number');
         if (tile.classList.contains('disabled')) return
             // disables click event on the css
-        e.target.classList.add('clicked');
         const p1Turn = player1.getMyTurn(),
             p2Turn = player2.getMyTurn();
         let mark = '';
@@ -144,16 +144,17 @@ gameBoardTiles.forEach(tile => {
 
         const playerTiles = playerTurn.getMarkedTiles();
         const isPlayerWinning = GameBoard.checkWin(playerTiles);
-        playerTurn.changeWin(isPlayerWinning);
 
         console.log(GameBoard.checkIfDraw());
 
+        e.target.classList.add('clicked');
+        e.target.textContent = mark;
+        if (isPlayerWinning) playerTurn.changeWin(isPlayerWinning);
 
         if (isPlayerWinning || GameBoard.checkIfDraw()) {
             toggleBoardClick();
             gameControl.stopGame(playerTurn);
         }
-        e.target.textContent = mark;
 
     });
 });
