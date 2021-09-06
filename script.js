@@ -3,21 +3,29 @@ const GameBoard = (function() {
     const getBoard = () => _gameTiles;
     const changeTile = (n, mark) => {
         _gameTiles.splice(n, 1, mark);
-        console.log(_gameTiles);
+        // console.log(_gameTiles);
     };
     const _winningCombinations = [
+        [4, 5, 6],
         [1, 5, 9],
         [1, 2, 3],
         [1, 4, 7],
         [2, 5, 8],
         [3, 6, 9],
-        [4, 5, 6],
         [7, 8, 9]
     ];
-    const _checkGameOver = () => {
-
+    const _checkCombination = (combi, pArr) => {
+        return combi.every((value) => pArr.includes(value))
     };
-    return { getBoard, changeTile }
+    const checkGameOver = (arr) => {
+        const sortedArr = arr.sort();
+        console.log(sortedArr);
+        for (let i = 0; i < _winningCombinations.length; i++) {
+            if (_checkCombination(_winningCombinations[i], sortedArr)) return true
+        }
+        return false
+    };
+    return { getBoard, changeTile, checkGameOver }
 
 })();
 
@@ -86,19 +94,19 @@ gameBoardTiles.forEach(tile => {
         const tileNum = e.target.getAttribute('data-array-number');
         if (whichPlayerTurn(p1Turn, p2Turn)) {
             mark = player1.marker;
-            player1.addMarkTile(tileNum);
+            player1.addMarkTile(Number(e.target.textContent));
         } else {
             mark = player2.marker;
-            player2.addMarkTile(tileNum);
-
+            player2.addMarkTile(Number(e.target.textContent));
+            const result = GameBoard.checkGameOver(player2.getMarkedTiles());
+            console.log(result);
         }
         e.target.textContent = mark;
         // disables click event on the css
         e.target.classList.add('clicked');
-        console.log(e.target);
-
-        changePlayerTurns();
+        // console.log(e.target);
         GameBoard.changeTile(tileNum, mark);
+        changePlayerTurns();
 
     });
 });
