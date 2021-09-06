@@ -82,13 +82,22 @@ gameBoardTiles.forEach(tile => {
     tile.addEventListener('click', (e) => {
         const p1Turn = player1.getMyTurn(),
             p2Turn = player2.getMyTurn();
-        const mark = (whichPlayerTurn(p1Turn, p2Turn)) ? player1.marker : player2.marker;
+        let mark = '';
+        const tileNum = e.target.getAttribute('data-array-number');
+        if (whichPlayerTurn(p1Turn, p2Turn)) {
+            mark = player1.marker;
+            player1.addMarkTile(tileNum);
+        } else {
+            mark = player2.marker;
+            player2.addMarkTile(tileNum);
+
+        }
         e.target.textContent = mark;
         // disables click event on the css
         e.target.classList.add('clicked');
         console.log(e.target);
+
         changePlayerTurns();
-        const tileNum = e.target.getAttribute('data-array-number');
         GameBoard.changeTile(tileNum, mark);
 
     });
