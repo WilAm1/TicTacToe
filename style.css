@@ -23,6 +23,13 @@
     background-color: lightblue;
 }
 
+
+/* disables click event */
+
+.tile.clicked {
+    pointer-events: none;
+}
+
 .tile:hover {
     opacity: .8;
 }
