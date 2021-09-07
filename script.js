@@ -82,8 +82,8 @@ const gameControl = (function() {
         return div
     }
 
-    const gameContainer = document.querySelector('.game-container');
     const renderBoard = (board) => {
+        const gameContainer = document.querySelector('.game-container');
         // removes the first child to 
         gameContainer.removeChild(gameContainer.firstChild);
         const gameBoardContainer = document.createElement('div');
@@ -148,14 +148,12 @@ const gameControl = (function() {
 
 
 
-const whichPlayerTurn = (p1, p2) => (p1 && !(p2)) ? 1 : 0;
+const whichPlayerTurn = (p1, p2) => {
+    return (p1.getMyTurn() && !(p2.getMyTurn())) ? p1 : p2;
+}
 
 
 
-gameControl.renderBoard(Board.getBoard());
-
-let gameBoardTiles = gameControl.getDivTiles();
-console.log(gameBoardTiles);
 
 
 
@@ -169,11 +167,8 @@ const addTileListener = (board) => {
             // console.log(player1)
 
             const tileArrNum = e.target.getAttribute('data-array-number');
-            const p1Turn = player1.getMyTurn(),
-                p2Turn = player2.getMyTurn();
-
             // chooses which player to use
-            const playerTurn = (whichPlayerTurn(p1Turn, p2Turn)) ? player1 : player2;
+            const playerTurn = (whichPlayerTurn(player1, player2));
             // switch to opposite player next turn
             gameControl.changePlayerTurns(player1, player2);
             let mark = playerTurn.marker;
@@ -198,6 +193,12 @@ const addTileListener = (board) => {
         });
     });
 }
+
+
+gameControl.renderBoard(Board.getBoard());
+
+let gameBoardTiles = gameControl.getDivTiles();
+console.log(gameBoardTiles);
 addTileListener(gameBoardTiles);
 
 // reset
