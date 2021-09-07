@@ -192,9 +192,7 @@ const addTileListener = (board) => {
 }
 addTileListener(gameBoardTiles);
 // reset
-const resetBtn = document.createElement('button');
-resetBtn.classList.add('reset-btn');
-resetBtn.textContent = 'Restart';
+const resetBtn = document.querySelector('.reset-btn');
 announceElement(resetBtn);
 resetBtn.addEventListener('click', () => {
     GameBoard.resetBoard();
