@@ -1,4 +1,4 @@
-const GameBoard = (function() {
+const Board = (function() {
     let _gameTiles = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     const getBoard = () => _gameTiles;
     const changeTile = (n, mark) => {
@@ -145,7 +145,7 @@ const changePlayerTurns = (p1, p2) => {
     p2.changeTurn();
 }
 
-gameControl.renderBoard(GameBoard.getBoard());
+gameControl.renderBoard(Board.getBoard());
 
 let gameBoardTiles = gameControl.getDivTiles();
 console.log(gameBoardTiles);
@@ -170,18 +170,18 @@ const addTileListener = (board) => {
             changePlayerTurns(player1, player2);
             let mark = playerTurn.marker;
 
-            GameBoard.changeTile(tileArrNum, mark);
+            Board.changeTile(tileArrNum, mark);
             playerTurn.addMarkTile(Number(tileArrNum) + 1);
             // get player array markss
             const playerTiles = playerTurn.getPlayerTiles();
-            const isPlayerWinning = GameBoard.checkWin(playerTiles);
+            const isPlayerWinning = Board.checkWin(playerTiles);
 
             // disables click event on the css
             e.target.classList.add('clicked');
             e.target.textContent = mark;
 
-
-            if (isPlayerWinning || GameBoard.checkIfDraw()) {
+            // Check if someone wins or it is a draw
+            if (isPlayerWinning || Board.checkIfDraw()) {
                 gameControl.toggleBoardClick(board);
                 if (isPlayerWinning) playerTurn.changeWin();
                 gameControl.stopGame(playerTurn);
@@ -191,11 +191,13 @@ const addTileListener = (board) => {
     });
 }
 addTileListener(gameBoardTiles);
+
 // reset
 const resetBtn = document.querySelector('.reset-btn');
 announceElement(resetBtn);
 resetBtn.addEventListener('click', () => {
-    GameBoard.resetBoard();
-    gameControl.renderBoard(GameBoard.getBoard());
+    Board.resetBoard();
+    const newBoard = Board.getBoard();
+    gameControl.renderBoard(newBoard);
     addTileListener(Array.from(document.querySelectorAll('div.tile')))
 });
