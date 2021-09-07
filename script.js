@@ -3,7 +3,6 @@ const GameBoard = (function() {
     const getBoard = () => _gameTiles;
     const changeTile = (n, mark) => {
         _gameTiles.splice(n, 1, mark);
-        // console.log(_gameTiles);
     };
     const _winningCombinations = [
         [1, 5, 9],
@@ -39,7 +38,6 @@ const GameBoard = (function() {
 
 // Player Factory function
 const Player = function(name, symbol, bool) {
-    let _score = 0;
     let _isMyTurn = bool;
     let _markedTiles = [];
     let _wins = false;
@@ -78,8 +76,10 @@ const Player = function(name, symbol, bool) {
     }
 };
 
-
-const announcementDiv = document.querySelector('.announcement');
+const announceElement = (element) => {
+    const announcementDiv = document.querySelector('.announcement');
+    announcementDiv.appendChild(element);
+};
 const gameControl = (function() {
     let player1 = null;
     let player2 = null;
@@ -113,7 +113,7 @@ const gameControl = (function() {
             winningText.textContent = 'It\'s A draw.'
         }
         winningDiv.appendChild(winningText);
-        announcementDiv.appendChild(winningDiv);
+        announceElement(winningDiv);
         _resetGame();
     }
     const _resetGame = () => {

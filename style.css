@@ -5,8 +5,8 @@
 
 .game-board {
     margin: 0 auto;
-    width: 600px;
-    height: 600px;
+    width: 400px;
+    height: 400px;
     background-color: darkcyan;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
