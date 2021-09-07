@@ -83,16 +83,17 @@ const gameControl = (function() {
         return div
     }
 
-    const gameBoardDOM = document.querySelector('.game-container');
+    const gameContainer = document.querySelector('.game-container');
     const renderBoard = (board) => {
-        gameBoardDOM.removeChild(gameBoardDOM.firstChild);
+        // removes the first child to 
+        gameContainer.removeChild(gameContainer.firstChild);
         const gameBoardContainer = document.createElement('div');
         gameBoardContainer.classList.add('game-board');
         for (let i = 0; i < board.length; i++) {
             const tileDiv = _makeDiv(i);
             gameBoardContainer.appendChild(tileDiv);
         }
-        gameBoardDOM.appendChild(gameBoardContainer);
+        gameContainer.appendChild(gameBoardContainer);
     }
     const stopGame = (player) => {
         const winningDiv = document.createElement('div');
@@ -126,13 +127,15 @@ const gameControl = (function() {
     const getDivTiles = () => {
         return Array.from(document.querySelectorAll('div.tile'))
     };
+    const toggleBoardClick = (board) => {
+        board.forEach(tile => {
+            tile.classList.toggle('disabled');
+        });
+    };
 
-    return { getDivTiles, renderBoard, isGameOver, stopGame, getPlayers, }
+    return { getDivTiles, renderBoard, isGameOver, stopGame, getPlayers, toggleBoardClick }
 })();
 
-
-
-// console.log(gameControl.getPlayers())
 
 
 const whichPlayerTurn = (p1, p2) => (p1 && !(p2)) ? 1 : 0;
@@ -147,11 +150,7 @@ gameControl.renderBoard(GameBoard.getBoard());
 let gameBoardTiles = gameControl.getDivTiles();
 console.log(gameBoardTiles);
 
-const toggleBoardClick = (board) => {
-    board.forEach(tile => {
-        tile.classList.toggle('disabled');
-    });
-};
+
 
 const addTileListener = (board) => {
     board.forEach(tile => {
@@ -183,7 +182,7 @@ const addTileListener = (board) => {
 
 
             if (isPlayerWinning || GameBoard.checkIfDraw()) {
-                toggleBoardClick(board);
+                gameControl.toggleBoardClick(board);
                 if (isPlayerWinning) playerTurn.changeWin();
                 gameControl.stopGame(playerTurn);
             }
