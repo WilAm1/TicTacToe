@@ -40,17 +40,17 @@ const Player = function(name, symbol, bool) {
     let _isMyTurn = bool;
     // array of marked board numbers
     let _markedTiles = [];
-    let _wins = false;
+    let _win = false;
     const marker = symbol;
     // public methods
     const changeTurn = () => {
         _isMyTurn = (_isMyTurn) ? false : true;
     };
-    const addMarkTile = (n) => _markedTiles.push(n);
-    const changeWin = () => {
-        _wins = true;
+    const addMark = (n) => _markedTiles.push(n);
+    const changeToWin = () => {
+        _win = true;
     }
-    const getWin = () => _wins
+    const getWin = () => _win
     const getPlayerTiles = () => _markedTiles;
     const getMyTurn = () => _isMyTurn;
     const getScore = () => _score;
@@ -60,9 +60,9 @@ const Player = function(name, symbol, bool) {
         getName,
         getScore,
         getPlayerTiles,
-        addMarkTile,
+        addMark,
         getWin,
-        changeWin,
+        changeToWin,
         changeTurn,
         getMyTurn
     }
@@ -75,7 +75,6 @@ const announceElement = (element) => {
 const gameControl = (function() {
     let player1 = null;
     let player2 = null;
-    let isGameOver = false;
     const _makeDiv = (arrNum) => {
         const div = document.createElement('div');
         div.classList.add('tile');
@@ -132,18 +131,26 @@ const gameControl = (function() {
             tile.classList.toggle('disabled');
         });
     };
+    const changePlayerTurns = (p1, p2) => {
+        p1.changeTurn();
+        p2.changeTurn();
+    }
 
-    return { getDivTiles, renderBoard, isGameOver, stopGame, getPlayers, toggleBoardClick }
+    return {
+        changePlayerTurns,
+        getDivTiles,
+        renderBoard,
+        stopGame,
+        getPlayers,
+        toggleBoardClick
+    }
 })();
 
 
 
 const whichPlayerTurn = (p1, p2) => (p1 && !(p2)) ? 1 : 0;
 
-const changePlayerTurns = (p1, p2) => {
-    p1.changeTurn();
-    p2.changeTurn();
-}
+
 
 gameControl.renderBoard(Board.getBoard());
 
@@ -157,21 +164,22 @@ const addTileListener = (board) => {
         tile.addEventListener('click', (e) => {
 
             if (tile.classList.contains('disabled')) return
-            const [player1, player2] = gameControl.getPlayers();
-            console.log(player1)
-            const tileArrNum = e.target.getAttribute('data-array-number');
 
+            const [player1, player2] = gameControl.getPlayers();
+            // console.log(player1)
+
+            const tileArrNum = e.target.getAttribute('data-array-number');
             const p1Turn = player1.getMyTurn(),
                 p2Turn = player2.getMyTurn();
 
             // chooses which player to use
             const playerTurn = (whichPlayerTurn(p1Turn, p2Turn)) ? player1 : player2;
             // switch to opposite player next turn
-            changePlayerTurns(player1, player2);
+            gameControl.changePlayerTurns(player1, player2);
             let mark = playerTurn.marker;
 
             Board.changeTile(tileArrNum, mark);
-            playerTurn.addMarkTile(Number(tileArrNum) + 1);
+            playerTurn.addMark(Number(tileArrNum) + 1);
             // get player array markss
             const playerTiles = playerTurn.getPlayerTiles();
             const isPlayerWinning = Board.checkWin(playerTiles);
@@ -183,7 +191,7 @@ const addTileListener = (board) => {
             // Check if someone wins or it is a draw
             if (isPlayerWinning || Board.checkIfDraw()) {
                 gameControl.toggleBoardClick(board);
-                if (isPlayerWinning) playerTurn.changeWin();
+                if (isPlayerWinning) playerTurn.changeToWin();
                 gameControl.stopGame(playerTurn);
             }
 
