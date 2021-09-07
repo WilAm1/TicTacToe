@@ -157,8 +157,8 @@ gameControl.renderBoard(GameBoard.getBoard());
 let gameBoardTiles = gameControl.getDivTiles();
 console.log(gameBoardTiles);
 
-const toggleBoardClick = () => {
-    gameBoardTiles.forEach(tile => {
+const toggleBoardClick = (board) => {
+    board.forEach(tile => {
         tile.classList.toggle('disabled');
     });
 };
@@ -195,7 +195,7 @@ const addTileListener = (board) => {
 
 
             if (isPlayerWinning || GameBoard.checkIfDraw()) {
-                toggleBoardClick();
+                toggleBoardClick(board);
                 if (isPlayerWinning) playerTurn.changeWin();
                 gameControl.stopGame(playerTurn);
             }
@@ -203,8 +203,8 @@ const addTileListener = (board) => {
         });
     });
 }
-addTileListener(gameBoardTiles)
-    // reset
+addTileListener(gameBoardTiles);
+// reset
 const resetBtn = document.createElement('button');
 resetBtn.classList.add('reset-btn');
 resetBtn.textContent = 'Restart';
@@ -212,6 +212,5 @@ announcementDiv.appendChild(resetBtn);
 resetBtn.addEventListener('click', () => {
     GameBoard.resetBoard();
     gameControl.renderBoard(GameBoard.getBoard());
-    toggleBoardClick();
     addTileListener(Array.from(document.querySelectorAll('div.tile')))
 });
