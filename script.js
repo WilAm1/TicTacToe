@@ -35,15 +35,15 @@ const GameBoard = (function() {
 
 
 
-
 // Player Factory function
 const Player = function(name, symbol, bool) {
     let _isMyTurn = bool;
+    // array of marked board numbers
     let _markedTiles = [];
     let _wins = false;
     const marker = symbol;
     // public methods
-    const changeMyTurn = () => {
+    const changeTurn = () => {
         _isMyTurn = (_isMyTurn) ? false : true;
     };
     const addMarkTile = (n) => _markedTiles.push(n);
@@ -51,27 +51,19 @@ const Player = function(name, symbol, bool) {
         _wins = true;
     }
     const getWin = () => _wins
-    const getMarkedTiles = () => _markedTiles;
+    const getPlayerTiles = () => _markedTiles;
     const getMyTurn = () => _isMyTurn;
     const getScore = () => _score;
     const getName = () => name;
-    const resetPlayer = () => {
-        _score = 0;
-        _isMyTurn = bool;
-        _markedTiles = [];
-        _wins = false;
-        marker = symbol;
-    };
-
     return {
         marker,
         getName,
         getScore,
-        getMarkedTiles,
+        getPlayerTiles,
         addMarkTile,
         getWin,
         changeWin,
-        changeMyTurn,
+        changeTurn,
         getMyTurn
     }
 };
@@ -84,11 +76,10 @@ const gameControl = (function() {
     let player1 = null;
     let player2 = null;
     let isGameOver = false;
-    const _makeDiv = (tile, arrNum) => {
+    const _makeDiv = (arrNum) => {
         const div = document.createElement('div');
         div.classList.add('tile');
         div.setAttribute('data-array-number', arrNum);
-        div.textContent = tile;
         return div
     }
 
@@ -98,7 +89,7 @@ const gameControl = (function() {
         const gameBoardContainer = document.createElement('div');
         gameBoardContainer.classList.add('game-board');
         for (let i = 0; i < board.length; i++) {
-            const tileDiv = _makeDiv(board[i], i);
+            const tileDiv = _makeDiv(i);
             gameBoardContainer.appendChild(tileDiv);
         }
         gameBoardDOM.appendChild(gameBoardContainer);
@@ -147,8 +138,8 @@ const gameControl = (function() {
 const whichPlayerTurn = (p1, p2) => (p1 && !(p2)) ? 1 : 0;
 
 const changePlayerTurns = (p1, p2) => {
-    p1.changeMyTurn();
-    p2.changeMyTurn();
+    p1.changeTurn();
+    p2.changeTurn();
 }
 
 gameControl.renderBoard(GameBoard.getBoard());
@@ -183,9 +174,8 @@ const addTileListener = (board) => {
             GameBoard.changeTile(tileArrNum, mark);
             playerTurn.addMarkTile(Number(tileArrNum) + 1);
             // get player array markss
-            const playerTiles = playerTurn.getMarkedTiles();
+            const playerTiles = playerTurn.getPlayerTiles();
             const isPlayerWinning = GameBoard.checkWin(playerTiles);
-            console.log('checkwin', playerTiles);
 
             // disables click event on the css
             e.target.classList.add('clicked');
