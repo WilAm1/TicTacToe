@@ -181,11 +181,11 @@ const addTileListener = (board) => {
             let mark = playerTurn.marker;
 
             GameBoard.changeTile(tileArrNum, mark);
-            playerTurn.addMarkTile(Number(tileArrNum + 1));
+            playerTurn.addMarkTile(Number(tileArrNum) + 1);
             // get player array markss
             const playerTiles = playerTurn.getMarkedTiles();
             const isPlayerWinning = GameBoard.checkWin(playerTiles);
-            console.log('checkwin', isPlayerWinning);
+            console.log('checkwin', playerTiles);
 
             // disables click event on the css
             e.target.classList.add('clicked');
