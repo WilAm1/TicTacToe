@@ -88,7 +88,6 @@ const gameControl = (function() {
         const div = document.createElement('div');
         div.classList.add('tile');
         div.setAttribute('data-array-number', arrNum);
-        div.setAttribute('data-board-number', arrNum + 1);
         div.textContent = tile;
         return div
     }
@@ -171,7 +170,6 @@ const addTileListener = (board) => {
             const [player1, player2] = gameControl.getPlayers();
             console.log(player1)
             const tileArrNum = e.target.getAttribute('data-array-number');
-            const tileBoardNum = e.target.getAttribute('data-board-number');
 
             const p1Turn = player1.getMyTurn(),
                 p2Turn = player2.getMyTurn();
@@ -183,11 +181,11 @@ const addTileListener = (board) => {
             let mark = playerTurn.marker;
 
             GameBoard.changeTile(tileArrNum, mark);
-            playerTurn.addMarkTile(Number(tileBoardNum));
+            playerTurn.addMarkTile(Number(tileArrNum + 1));
             // get player array markss
             const playerTiles = playerTurn.getMarkedTiles();
             const isPlayerWinning = GameBoard.checkWin(playerTiles);
-            console.log(GameBoard.checkIfDraw());
+            console.log('checkwin', isPlayerWinning);
 
             // disables click event on the css
             e.target.classList.add('clicked');
@@ -208,7 +206,7 @@ addTileListener(gameBoardTiles);
 const resetBtn = document.createElement('button');
 resetBtn.classList.add('reset-btn');
 resetBtn.textContent = 'Restart';
-announcementDiv.appendChild(resetBtn);
+announceElement(resetBtn);
 resetBtn.addEventListener('click', () => {
     GameBoard.resetBoard();
     gameControl.renderBoard(GameBoard.getBoard());
