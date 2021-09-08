@@ -14,7 +14,7 @@ const Board = (function() {
         return combi.every((value) => pArr.includes(value))
     };
     // public methods
-    const getBoard = () => _gameTiles;
+    const getArray = () => _gameTiles;
     const changeTile = (n, mark) => {
         _gameTiles.splice(n, 1, mark);
     };
@@ -30,7 +30,7 @@ const Board = (function() {
     const resetBoard = () => {
         _gameTiles = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     }
-    return { getBoard, changeTile, checkWin, checkIfDraw, resetBoard }
+    return { getArray, changeTile, checkWin, checkIfDraw, resetBoard }
 
 })();
 
@@ -162,7 +162,7 @@ const addTileListener = (board) => {
     board.forEach(tile => {
         tile.addEventListener('click', (e) => {
 
-            if (tile.classList.contains('disabled')) return
+            if (tile.classList.contains('disabled') || tile.classList.contains('clicked')) return
             const tileArrNum = e.target.getAttribute('data-array-number');
             // disables click event on the css
             e.target.classList.add('clicked');
@@ -194,7 +194,7 @@ const addTileListener = (board) => {
 
 const newGame = () => {
     Board.resetBoard();
-    const newBoard = Board.getBoard();
+    const newBoard = Board.getArray();
     gameControl.renderBoard(newBoard);
     const tileArray = gameControl.getDivTiles();
     addTileListener(tileArray);
