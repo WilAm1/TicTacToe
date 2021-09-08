@@ -89,7 +89,7 @@ const gameControl = (function() {
         player2 = Player('Player 2', '⭕', false);
     };
 
-    const _resetGame = () => {
+    const _resetPlayers = () => {
         player1 = null;
         player2 = null;
 
@@ -115,10 +115,10 @@ const gameControl = (function() {
         if (!!winner) {
             message = `${winner.getName()} wins!`;
         } else {
-            message = 'It\'s a draw.'
+            message = 'It\'s a draw.';
         }
         announceElement(message);
-        _resetGame();
+        _resetPlayers();
     }
 
     const initializePlayers = () => {
@@ -194,6 +194,7 @@ const addTileListener = (board) => {
 
 
 const newGame = () => {
+    announceElement('');
     Board.resetBoard();
     const newBoard = Board.getArray();
     gameControl.renderBoard(newBoard);
