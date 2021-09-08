@@ -84,9 +84,9 @@ const gameControl = (function() {
         return div
     }
 
-    const _initiliazePlayers = () => {
-        player1 = Player('wil', '❌', true);
-        player2 = Player('Bot', '⭕', false);
+    const _createNewPlayers = () => {
+        player1 = Player('Player 1', '❌', true);
+        player2 = Player('Player 2', '⭕', false);
     };
 
     const _resetGame = () => {
@@ -120,17 +120,16 @@ const gameControl = (function() {
         _resetGame();
     }
 
-
     const initializePlayers = () => {
         if (player1 === null || player2 === null) {
-            _initiliazePlayers()
+            _createNewPlayers();
         }
-        return [player1, player2]
     };
 
     const getDivTiles = () => {
         return Array.from(document.querySelectorAll('div.tile'))
     };
+
     const toggleBoardClick = (board) => {
         board.forEach(tile => {
             tile.classList.toggle('disabled');
@@ -184,8 +183,8 @@ const addTileListener = (board) => {
 
             // Check if someone wins or it is a draw
             if (isPlayerWinning || Board.checkIfDraw()) {
-                gameControl.toggleBoardClick(board);
                 if (isPlayerWinning) playerTurn.changeToWin();
+                gameControl.toggleBoardClick(board);
                 gameControl.stopGame(playerTurn);
             }
         });
