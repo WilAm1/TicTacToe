@@ -171,20 +171,24 @@ const addTileListener = (board) => {
             gameControl.initializePlayers();
             // chooses which player to use
             const playerTurn = gameControl.getPlayer();
+            let mark = playerTurn.marker;
+            e.target.textContent = mark;
+            // Add mark to the boad
+            Board.changeTile(tileArrNum, mark);
+            // Add marked number to player array 
+            playerTurn.addMark(Number(tileArrNum) + 1);
+
+
             // switch to opposite player next turn
             gameControl.changePlayerTurns();
             // Announce next player turn
             announceElement(`${gameControl.getPlayer().getName()}\'s Turn. `);
-            let mark = playerTurn.marker;
-            e.target.textContent = mark;
 
-            Board.changeTile(tileArrNum, mark);
-            playerTurn.addMark(Number(tileArrNum) + 1);
-            // get player array markss
+            // get player array marks
             const playerTiles = playerTurn.getPlayerTiles();
+            // check player's marked array if same to the winning combination  
             const isPlayerWinning = Board.checkWin(playerTiles);
-
-            // Check if someone wins or it is a draw
+            // Check if player wins or it is a draw
             if (isPlayerWinning || Board.checkIfDraw()) {
                 if (isPlayerWinning) playerTurn.changeToWin();
                 gameControl.toggleBoardClick(board);
