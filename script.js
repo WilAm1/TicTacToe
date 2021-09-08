@@ -67,9 +67,9 @@ const Player = function(name, symbol, bool) {
     }
 };
 
-const announceElement = (element) => {
-    const announcementDiv = document.querySelector('.announcement');
-    announcementDiv.appendChild(element);
+const announceElement = (text) => {
+    const pElement = document.querySelector('.message');
+    pElement.textContent = text
 };
 
 // Main Logic
@@ -107,16 +107,17 @@ const gameControl = (function() {
         gameContainer.appendChild(gameBoardContainer);
     };
 
-    const stopGame = (player) => {
-        const winningDiv = document.createElement('div');
-        const winningText = document.createElement('p');
-        if (player.getWin()) {
-            winningText.textContent = `${player.getName()} wins!`;
+    const displayOutcome = () => {
+        let message = '';
+        const winner = (player1.getWin()) ? player1 :
+            (player2.getWin()) ? player2 :
+            0;
+        if (!!winner) {
+            message = `${winner.getName()} wins!`;
         } else {
-            winningText.textContent = 'It\'s A draw.'
+            message = 'It\'s a draw.'
         }
-        winningDiv.appendChild(winningText);
-        announceElement(winningDiv);
+        announceElement(message);
         _resetGame();
     }
 
@@ -127,7 +128,7 @@ const gameControl = (function() {
     };
 
     const getDivTiles = () => {
-        return Array.from(document.querySelectorAll('div.tile'))
+        return Array.from(document.querySelectorAll('.tile'))
     };
 
     const toggleBoardClick = (board) => {
@@ -152,7 +153,7 @@ const gameControl = (function() {
         renderBoard,
         initializePlayers,
         whichPlayerTurn,
-        stopGame,
+        displayOutcome,
         toggleBoardClick
     }
 })();
@@ -185,7 +186,7 @@ const addTileListener = (board) => {
             if (isPlayerWinning || Board.checkIfDraw()) {
                 if (isPlayerWinning) playerTurn.changeToWin();
                 gameControl.toggleBoardClick(board);
-                gameControl.stopGame(playerTurn);
+                gameControl.displayOutcome();
             }
         });
     });
@@ -202,7 +203,7 @@ const newGame = () => {
 
 // reset
 const resetBtn = document.querySelector('.reset-btn');
-announceElement(resetBtn);
+
 resetBtn.addEventListener('click', () => {
     newGame();
 });
