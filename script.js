@@ -85,8 +85,8 @@ const gameControl = (function() {
     }
 
     const _createNewPlayers = () => {
-        player1 = Player('Player 1', '❌', true);
-        player2 = Player('Player 2', '⭕', false);
+        player1 = Player('Player 1', 'X', true);
+        player2 = Player('Player 2', 'O', false);
     };
 
     const _resetPlayers = () => {
