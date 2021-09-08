@@ -142,7 +142,7 @@ const gameControl = (function() {
         player2.changeTurn();
     };
 
-    const whichPlayerTurn = () => {
+    const getPlayer = () => {
         return (player1.getMyTurn() && !(player2.getMyTurn())) ? player1 : player2;
     }
 
@@ -152,7 +152,7 @@ const gameControl = (function() {
         getDivTiles,
         renderBoard,
         initializePlayers,
-        whichPlayerTurn,
+        getPlayer,
         displayOutcome,
         toggleBoardClick
     }
@@ -170,9 +170,11 @@ const addTileListener = (board) => {
 
             gameControl.initializePlayers();
             // chooses which player to use
-            const playerTurn = gameControl.whichPlayerTurn();
+            const playerTurn = gameControl.getPlayer();
             // switch to opposite player next turn
             gameControl.changePlayerTurns();
+            // Announce next player turn
+            announceElement(`${gameControl.getPlayer().getName()}\'s Turn. `);
             let mark = playerTurn.marker;
             e.target.textContent = mark;
 
