@@ -121,7 +121,7 @@ const gameControl = (function() {
     }
 
 
-    const getPlayers = () => {
+    const initializePlayers = () => {
         if (player1 === null || player2 === null) {
             _initiliazePlayers()
         }
@@ -151,7 +151,7 @@ const gameControl = (function() {
         changePlayerTurns,
         getDivTiles,
         renderBoard,
-        getPlayers,
+        initializePlayers,
         whichPlayerTurn,
         stopGame,
         toggleBoardClick
@@ -168,7 +168,7 @@ const addTileListener = (board) => {
             // disables click event on the css
             e.target.classList.add('clicked');
 
-            const [player1, player2] = gameControl.getPlayers();
+            gameControl.initializePlayers();
             // chooses which player to use
             const playerTurn = gameControl.whichPlayerTurn();
             // switch to opposite player next turn
