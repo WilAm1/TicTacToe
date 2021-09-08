@@ -193,16 +193,20 @@ const addTileListener = (board) => {
 };
 
 
-gameControl.renderBoard(Board.getBoard());
-let gameBoardTiles = gameControl.getDivTiles();
-addTileListener(gameBoardTiles);
+const newGame = () => {
+    Board.resetBoard();
+    const newBoard = Board.getBoard();
+    gameControl.renderBoard(newBoard);
+    const tileArray = gameControl.getDivTiles();
+    addTileListener(tileArray);
+};
 
 // reset
 const resetBtn = document.querySelector('.reset-btn');
 announceElement(resetBtn);
 resetBtn.addEventListener('click', () => {
-    Board.resetBoard();
-    const newBoard = Board.getBoard();
-    gameControl.renderBoard(newBoard);
-    addTileListener(Array.from(document.querySelectorAll('div.tile')))
+    newGame();
 });
+
+
+window.onload = newGame;
