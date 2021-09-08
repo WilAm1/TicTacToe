@@ -1,9 +1,5 @@
 const Board = (function() {
     let _gameTiles = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
-    const getBoard = () => _gameTiles;
-    const changeTile = (n, mark) => {
-        _gameTiles.splice(n, 1, mark);
-    };
     const _winningCombinations = [
         [1, 5, 9],
         [1, 4, 7],
@@ -16,6 +12,11 @@ const Board = (function() {
     ];
     const _checkCombination = (combi, pArr) => {
         return combi.every((value) => pArr.includes(value))
+    };
+    // public methods
+    const getBoard = () => _gameTiles;
+    const changeTile = (n, mark) => {
+        _gameTiles.splice(n, 1, mark);
     };
     const checkIfDraw = () => !_gameTiles.includes(' ');
     const checkWin = (arr) => {
@@ -75,6 +76,7 @@ const announceElement = (element) => {
 const gameControl = (function() {
     let player1 = null;
     let player2 = null;
+
     const _makeDiv = (arrNum) => {
         const div = document.createElement('div');
         div.classList.add('tile');
@@ -82,6 +84,16 @@ const gameControl = (function() {
         return div
     }
 
+    const _initiliazePlayers = () => {
+        player1 = Player('wil', '❌', true);
+        player2 = Player('Bot', '⭕', false);
+    };
+
+    const _resetGame = () => {
+        player1 = null;
+        player2 = null;
+
+    };
     const renderBoard = (board) => {
         const gameContainer = document.querySelector('.game-container');
         // removes the first child to 
@@ -93,7 +105,8 @@ const gameControl = (function() {
             gameBoardContainer.appendChild(tileDiv);
         }
         gameContainer.appendChild(gameBoardContainer);
-    }
+    };
+
     const stopGame = (player) => {
         const winningDiv = document.createElement('div');
         const winningText = document.createElement('p');
@@ -106,15 +119,7 @@ const gameControl = (function() {
         announceElement(winningDiv);
         _resetGame();
     }
-    const _resetGame = () => {
-        player1 = null;
-        player2 = null;
 
-    };
-    const _initiliazePlayers = () => {
-        player1 = Player('wil', '❌', true);
-        player2 = Player('Bot', '⭕', false);
-    };
 
     const getPlayers = () => {
         if (player1 === null || player2 === null) {
@@ -131,30 +136,27 @@ const gameControl = (function() {
             tile.classList.toggle('disabled');
         });
     };
+
     const changePlayerTurns = (p1, p2) => {
         p1.changeTurn();
         p2.changeTurn();
+    };
+
+    const whichPlayerTurn = (p1, p2) => {
+        return (p1.getMyTurn() && !(p2.getMyTurn())) ? p1 : p2;
     }
+
 
     return {
         changePlayerTurns,
         getDivTiles,
         renderBoard,
-        stopGame,
         getPlayers,
+        whichPlayerTurn,
+        stopGame,
         toggleBoardClick
     }
 })();
-
-
-
-const whichPlayerTurn = (p1, p2) => {
-    return (p1.getMyTurn() && !(p2.getMyTurn())) ? p1 : p2;
-}
-
-
-
-
 
 
 const addTileListener = (board) => {
@@ -162,16 +164,17 @@ const addTileListener = (board) => {
         tile.addEventListener('click', (e) => {
 
             if (tile.classList.contains('disabled')) return
+            const tileArrNum = e.target.getAttribute('data-array-number');
+            // disables click event on the css
+            e.target.classList.add('clicked');
 
             const [player1, player2] = gameControl.getPlayers();
-            // console.log(player1)
-
-            const tileArrNum = e.target.getAttribute('data-array-number');
             // chooses which player to use
-            const playerTurn = (whichPlayerTurn(player1, player2));
+            const playerTurn = (gameControl.whichPlayerTurn(player1, player2));
             // switch to opposite player next turn
             gameControl.changePlayerTurns(player1, player2);
             let mark = playerTurn.marker;
+            e.target.textContent = mark;
 
             Board.changeTile(tileArrNum, mark);
             playerTurn.addMark(Number(tileArrNum) + 1);
@@ -179,26 +182,19 @@ const addTileListener = (board) => {
             const playerTiles = playerTurn.getPlayerTiles();
             const isPlayerWinning = Board.checkWin(playerTiles);
 
-            // disables click event on the css
-            e.target.classList.add('clicked');
-            e.target.textContent = mark;
-
             // Check if someone wins or it is a draw
             if (isPlayerWinning || Board.checkIfDraw()) {
                 gameControl.toggleBoardClick(board);
                 if (isPlayerWinning) playerTurn.changeToWin();
                 gameControl.stopGame(playerTurn);
             }
-
         });
     });
-}
+};
 
 
 gameControl.renderBoard(Board.getBoard());
-
 let gameBoardTiles = gameControl.getDivTiles();
-console.log(gameBoardTiles);
 addTileListener(gameBoardTiles);
 
 // reset
