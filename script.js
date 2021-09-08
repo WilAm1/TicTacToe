@@ -53,12 +53,10 @@ const Player = function(name, symbol, bool) {
     const getWin = () => _win
     const getPlayerTiles = () => _markedTiles;
     const getMyTurn = () => _isMyTurn;
-    const getScore = () => _score;
     const getName = () => name;
     return {
         marker,
         getName,
-        getScore,
         getPlayerTiles,
         addMark,
         getWin,
@@ -72,6 +70,8 @@ const announceElement = (element) => {
     const announcementDiv = document.querySelector('.announcement');
     announcementDiv.appendChild(element);
 };
+
+// Main Logic
 const gameControl = (function() {
     let player1 = null;
     let player2 = null;
