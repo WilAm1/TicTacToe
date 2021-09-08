@@ -105,6 +105,7 @@ const gameControl = (function() {
             gameBoardContainer.appendChild(tileDiv);
         }
         gameContainer.appendChild(gameBoardContainer);
+        _resetPlayers();
     };
 
     const displayOutcome = () => {
